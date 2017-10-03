@@ -34,11 +34,11 @@ public class CameraController : MonoBehaviour {
 	void LateUpdate () {
 
 		//get the x position of the mouse & rotate target
-		float horizontal = Input.GetAxis("Mouse X")*rotateSpeed;
+		float horizontal = Input.GetAxisRaw("Mouse X")*rotateSpeed;
 		target.Rotate (0,horizontal,0);
 
 		//get the y position of the mouse & rotate pivot
-		float vertical = Input.GetAxis ("Mouse Y") * rotateSpeed;
+		float vertical = Input.GetAxisRaw ("Mouse Y") * rotateSpeed;
 		//pivot.Rotate (-vertical, 0, 0);
 		if (invertY) {
 			pivot.Rotate (vertical, 0, 0);
