@@ -26,16 +26,19 @@ public class CameraController : MonoBehaviour {
 			offset = target.position - transform.position; 
 		}
 		pivot.transform.position = target.transform.position; 
-		pivot.transform.parent = target.transform; 
+		//pivot.transform.parent = target.transform; 
+		pivot.transform.parent = null; 
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
 
+		pivot.transform.position = target.transform.position; 
+
 		//get the x position of the mouse & rotate target
 		float horizontal = Input.GetAxisRaw("Mouse X")*rotateSpeed;
-		target.Rotate (0,horizontal,0);
+		pivot.Rotate (0,horizontal,0);
 
 		//get the y position of the mouse & rotate pivot
 		float vertical = Input.GetAxisRaw ("Mouse Y") * rotateSpeed;
@@ -58,7 +61,7 @@ public class CameraController : MonoBehaviour {
 
 		//move the camera based on the current rotation of the target and the original offset
 
-		float desiredYAngle = target.eulerAngles.y;
+		float desiredYAngle = pivot.eulerAngles.y;
 		float desiredXAngle = pivot.eulerAngles.x;
 
 		Quaternion rotation = Quaternion.Euler (desiredXAngle,desiredYAngle,0);
