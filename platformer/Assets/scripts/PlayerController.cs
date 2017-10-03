@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour {
 
 	public GameObject playerModel; 
 
+	public float knockBackForce; 
+	public float knockBackTime; 
+	private float knockBackCounter; 
+
 	// Use this for initialization
 	void Start () {
 	//	rb = GetComponent<Rigidbody> (); 
@@ -40,19 +44,25 @@ public class PlayerController : MonoBehaviour {
 
 
 		//moveDirection = new Vector3 (Input.GetAxis ("Horizontal") * moveSpeed, moveDirection.y, Input.GetAxis ("Vertical") * moveSpeed);
-		float yStore = moveDirection.y;
-		moveDirection = (transform.forward * Input.GetAxisRaw ("Vertical") ) + (transform.right * Input.GetAxisRaw("Horizontal"));
-		moveDirection = moveDirection.normalized * moveSpeed; //aplico la gravedad de vuelta porque lo normalice y anda lento
-		moveDirection.y = yStore; 
+		if (knockBackCounter <= 0) {
+			float yStore = moveDirection.y;
+			moveDirection = (transform.forward * Input.GetAxisRaw ("Vertical")) + (transform.right * Input.GetAxisRaw ("Horizontal"));
+			moveDirection = moveDirection.normalized * moveSpeed; //aplico la gravedad de vuelta porque lo normalice y anda lento
+			moveDirection.y = yStore; 
 
 
-		if (controller.isGrounded ) {
-			//moveDirection = new Vector3 (Input.GetAxis ("Horizontal") * moveSpeed, 0f, Input.GetAxis ("Vertical") * moveSpeed); esto lo que hace es que no se pueda mover en el aire
-			moveDirection.y = 0f; 
-			if (Input.GetButtonDown ("Jump")) {
-				moveDirection.y = jumpForce;
+			if (controller.isGrounded) {
+				//moveDirection = new Vector3 (Input.GetAxis ("Horizontal") * moveSpeed, 0f, Input.GetAxis ("Vertical") * moveSpeed); esto lo que hace es que no se pueda mover en el aire
+				moveDirection.y = 0f; 
+				if (Input.GetButtonDown ("Jump")) {
+					moveDirection.y = jumpForce;
 
+				}
 			}
+
+		} else {
+			knockBackCounter -= Time.deltaTime; 
+
 		}
 		moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale*Time.deltaTime);
 
@@ -69,5 +79,17 @@ public class PlayerController : MonoBehaviour {
 		anim.SetBool ("isGrounded", controller.isGrounded);
 		anim.SetFloat ("Speed", (Mathf.Abs (Input.GetAxis ("Vertical"))+Mathf.Abs(Input.GetAxis("Horizontal"))));
 		
+	}
+
+
+	public void KnockBack(Vector3 direction)
+	{
+		knockBackCounter = knockBackTime;
+
+
+		moveDirection = direction * knockBackForce;
+		moveDirection.y = knockBackForce; 
+
+
 	}
 }
